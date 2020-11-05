@@ -1,5 +1,26 @@
 <template>
 <div>
+  <div v-if="isTodayDone !== true">
+    <el-card>
+      <el-form
+        ref="today"
+        :model="today"
+        label-width="80px"
+      >
+        <el-form-item label="是否进步">
+          <el-radio v-model="today.hasProgress" :label="1">进步了！很棒</el-radio>
+          <el-radio v-model="today.hasProgress" :label="0">没进步，有点可惜</el-radio>
+        </el-form-item>
+        <el-form-item label="进步内容" v-if="today.hasProgress === 1"  prop="progressDetail" :rules="[{ validator: checkProgressDetail, trigger: 'change' }]">
+          <el-input type="textarea" v-model="today.progressDetail"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="mini" type="primary" @click="onSubmit">保存</el-button>
+          <el-button size="mini"  @click="reset">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+  </div>
   <div
     v-for="(i,index) in diaries"
     :key="index">
@@ -21,7 +42,7 @@
         <el-radio v-model="diaries[index].hasProgress" :label="1">进步了！很棒</el-radio>
         <el-radio v-model="diaries[index].hasProgress" :label="0">没进步，有点可惜</el-radio>
       </el-form-item>
-      <el-form-item label="进步原因">
+      <el-form-item label="进步内容" v-if="diaries[index].hasProgress === 1">
         <el-input type="textarea" v-model="diaries[index].progressDetail"/>
       </el-form-item>
     </el-form>
@@ -38,8 +59,13 @@ export default {
   data () {
     return {
       diaries: [],
+      today: {
+        progressDetail: null,
+        hasProgress: 1
+      },
       page: 1,
-      arriveEnd: false
+      arriveEnd: false,
+      isTodayDone: true
     }
   },
   mounted () {
@@ -55,10 +81,29 @@ export default {
         }
       }
     })
-
-    this.query()
+    this.init()
   },
   methods: {
+    init () {
+      this.$get('progress/countTodayDiary').then(res => {
+        this.isTodayDone = res.data !== 0
+      })
+
+      this.query()
+    },
+    onSubmit () {
+      this.validate('today', () => {
+        this.$post('progress/saveTodayDiary', this.today).then(res => {
+
+        })
+      })
+    },
+    reset () {
+      this.today = {
+        progressDetail: null,
+        hasProgress: 1
+      }
+    },
     query () {
       this.$post('progress/listDiary', {page: this.page, size: 3}).then(res => {
         res.data.forEach(i => {
@@ -66,6 +111,12 @@ export default {
         })
         this.arriveEnd = res.data.length === 0
       })
+    },
+    checkProgressDetail (rule, value, callback) {
+      if (this.today.hasProgress === 1 && (!this.today.progressDetail || this.today.progressDetail === '')) {
+        return callback(new Error('到底进步了什么呢'))
+      }
+      return callback()
     }
   }
 }
