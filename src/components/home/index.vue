@@ -1,11 +1,22 @@
 <template>
   <h5>
-    Hello world
+    {{ message }}
   </h5>
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      message: null
+    }
+  },
+  mounted () {
+    this.$get('/hello').then(res => {
+      this.message = res.data
+    })
+  }
+}
 </script>
 
 <style scoped>
