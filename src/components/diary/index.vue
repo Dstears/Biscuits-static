@@ -32,11 +32,7 @@
       label-width="80px"
       >
       <el-form-item label="日期">
-        <el-date-picker
-          v-model="diaries[index].createDate"
-          type="date"
-          placeholder="选择日期">
-        </el-date-picker>
+        <span>{{diaries[index].createDate}}</span>
       </el-form-item>
       <el-form-item label="是否进步">
         <el-radio v-model="diaries[index].hasProgress" :label="1">进步了！很棒</el-radio>
