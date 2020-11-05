@@ -1,6 +1,4 @@
 'use strict'
 module.exports = {
-  NODE_ENV: '"production"',
-
-  API_ROOT: '"http://api.mbiscuit.com/"'
+  NODE_ENV: '"production"'
 }

@@ -14,6 +14,7 @@ Vue.use(Clipboard)
 Vue.use(VueResource)
 Vue.config.productionTip = false
 Vue.prototype.$get = common.get
+Vue.prototype.baseURL = process.env.API_ROOT
 Vue.prototype.$post = common.post
 Vue.prototype.validate = common.validate
 Vue.prototype.copy = common.copy

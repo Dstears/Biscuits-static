@@ -3,7 +3,7 @@ export default {
     const self = this
     return {
       then (fn) {
-        self.$http.get(url).then(res => callBack(res, self, fn))
+        self.$http.get('api/' + url).then(res => callBack(res, self, fn))
       }
     }
   },
@@ -11,7 +11,7 @@ export default {
     const self = this
     return {
       then (fn) {
-        self.$http.post(url, jsonParam).then(res => callBack(res, self, fn))
+        self.$http.post('api/' + url, jsonParam).then(res => callBack(res, self, fn))
       }
     }
   },

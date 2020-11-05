@@ -12,7 +12,7 @@ export default {
     }
   },
   mounted () {
-    this.$get('/hello').then(res => {
+    this.$get('hello').then(res => {
       this.message = res.data
     })
   }
