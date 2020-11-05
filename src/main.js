@@ -7,10 +7,12 @@ import App from './App'
 import VueResource from 'vue-resource'
 import router from './router'
 import common from '@/util/common'
+import loading from '@/components/loading/loading'
 import Clipboard from 'v-clipboard'
 
 Vue.use(ElementUI)
 Vue.use(Clipboard)
+Vue.use(loading)
 Vue.use(VueResource)
 Vue.config.productionTip = false
 Vue.prototype.$get = common.get

@@ -1,5 +1,6 @@
 <template>
 <div>
+  <loading v-if="loading"/>
   <div v-if="isTodayDone !== true">
     <el-card>
       <el-form
@@ -54,6 +55,7 @@
 export default {
   data () {
     return {
+      loading: false,
       diaries: [],
       today: {
         progressDetail: null,
@@ -88,9 +90,11 @@ export default {
       this.query()
     },
     onSubmit () {
+      this.loading = true
       this.validate('today', () => {
         this.$post('progress/saveTodayDiary', this.today).then(res => {
-
+          this.init()
+          this.loading = false
         })
       })
     },
