@@ -108,7 +108,7 @@ export default {
       }
     },
     query () {
-      this.$post('progress/listDiary', {page: this.page, size: 3}).then(res => {
+      this.$post('progress/listDiary', {page: this.page, size: 4}).then(res => {
         res.data.forEach(i => {
           this.diaries.push(i)
         })
