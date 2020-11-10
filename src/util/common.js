@@ -1,33 +1,35 @@
 export default {
-  get (url) {
+  get(url) {
     const self = this
     return {
-      then (fn) {
+      then(fn) {
         self.$http.get('api/' + url).then(res => callBack(res, self, fn))
       }
     }
   },
-  post (url, jsonParam) {
+  post(url, jsonParam) {
     const self = this
     return {
-      then (fn) {
+      then(fn) {
         self.$http.post('api/' + url, jsonParam).then(res => callBack(res, self, fn))
       }
     }
   },
-  validate (ref, fn) {
+  validate(ref, fn, elsefn) {
     this.$refs[ref].validate((valid) => {
       if (valid) {
         if (typeof fn === 'function') {
           fn()
         }
       } else {
-        console.log('error submit!!')
+        if (elsefn && typeof elsefn === 'function') {
+          elsefn()
+        }
         return false
       }
     })
   },
-  getCookie (name) {
+  getCookie(name) {
     let reg = new RegExp('(^| )' + name + '=([^;]*)(;|$)')
     let arr = document.cookie.match(reg)
     if (arr) {
@@ -36,14 +38,18 @@ export default {
       return null
     }
   },
-  delCookie (name) {
+  delCookie(name) {
     const exp = new Date()
     exp.setTime(exp.getTime() - 1)
     const cval = this.getCookie(name)
-    if (cval != null) { document.cookie = name + '=' + cval + ';expires=' + exp.toGMTString() }
+    if (cval != null) {
+      document.cookie = name + '=' + cval + ';expires=' + exp.toGMTString()
+    }
   },
-  arr2tree (arr, idPropName, pIdProdName, labelPropName) {
-    if (!Array.isArray(arr)) { return [] }
+  arr2tree(arr, idPropName, pIdProdName, labelPropName) {
+    if (!Array.isArray(arr)) {
+      return []
+    }
     for (let i = 0; i < arr.length; i++) {
       const o = arr[i]
       o.originalId = o.id
@@ -62,11 +68,12 @@ export default {
     })
     return result
   },
-  copy (obj) {
+  copy(obj) {
     return JSON.parse(JSON.stringify(obj))
   }
 }
-function convertChild (arr, parentItem, parentId) {
+
+function convertChild(arr, parentItem, parentId) {
   arr.forEach(item => {
     if (item.pId === parentId) {
       parentItem.children = parentItem.children ? parentItem.children : []
@@ -76,6 +83,7 @@ function convertChild (arr, parentItem, parentId) {
     }
   })
 }
+
 const callBack = function (res, self, fn) {
   if (res.data.code === '0') {
     if (typeof fn === 'function') {

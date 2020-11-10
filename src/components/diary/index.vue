@@ -1,54 +1,55 @@
 <template>
-<div>
-  <loading v-if="loading"/>
-  <div v-if="isTodayDone !== true">
-    <el-card>
-      <el-form
-        ref="today"
-        :model="today"
-        label-width="80px"
-      >
-        <el-form-item label="是否进步">
-          <el-radio v-model="today.hasProgress" :label="1">进步了！很棒</el-radio>
-          <el-radio v-model="today.hasProgress" :label="0">没进步，有点可惜</el-radio>
-        </el-form-item>
-        <el-form-item label="进步内容" v-if="today.hasProgress === 1"  prop="progressDetail" :rules="[{ validator: checkProgressDetail, trigger: 'change' }]">
-          <el-input type="textarea" v-model="today.progressDetail"/>
-        </el-form-item>
-        <el-form-item>
-          <el-button size="mini" type="primary" @click="onSubmit">保存</el-button>
-          <el-button size="mini"  @click="reset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+  <div>
+    <loading v-if="loading"/>
+    <div v-if="isTodayDone !== true">
+      <el-card>
+        <el-form
+          ref="today"
+          :model="today"
+          label-width="80px"
+        >
+          <el-form-item label="是否进步">
+            <el-radio v-model="today.hasProgress" :label="1">进步了！很棒</el-radio>
+            <el-radio v-model="today.hasProgress" :label="0">没进步，有点可惜</el-radio>
+          </el-form-item>
+          <el-form-item label="进步内容" v-if="today.hasProgress === 1" prop="progressDetail"
+                        :rules="[{ validator: checkProgressDetail, trigger: 'change' }]">
+            <el-input type="textarea" v-model="today.progressDetail"/>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="mini" type="primary" @click="onSubmit">保存</el-button>
+            <el-button size="mini" @click="reset">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </div>
+    <div
+      v-for="(i,index) in diaries"
+      :key="index">
+      <el-card style="margin-top: 5px">
+        <el-form
+          disabled
+          :ref="'last'+index"
+          :model="diaries[index]"
+          label-width="80px"
+        >
+          <el-form-item label="日期">
+            <span>{{ diaries[index].createDate }}</span>
+          </el-form-item>
+          <el-form-item label="是否进步">
+            <span v-if="diaries[index].hasProgress === 1" style="color:greenyellow">进步了！很棒</span>
+            <span v-if="diaries[index].hasProgress === 0">没进步，有点可惜</span>
+          </el-form-item>
+          <el-form-item label="进步内容" v-if="diaries[index].hasProgress === 1">
+            <el-input type="textarea" v-model="diaries[index].progressDetail"/>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </div>
+    <div v-if="arriveEnd" style="text-align: center;margin-top: 5px">
+      <span>已经没有啦</span>
+    </div>
   </div>
-  <div
-    v-for="(i,index) in diaries"
-    :key="index">
-  <el-card style="margin-top: 5px">
-    <el-form
-      disabled
-      :ref="'last'+index"
-      :model="diaries[index]"
-      label-width="80px"
-      >
-      <el-form-item label="日期">
-        <span>{{diaries[index].createDate}}</span>
-      </el-form-item>
-      <el-form-item label="是否进步">
-        <span v-if="diaries[index].hasProgress === 1" style="color:greenyellow">进步了！很棒</span>
-        <span v-if="diaries[index].hasProgress === 0">没进步，有点可惜</span>
-      </el-form-item>
-      <el-form-item label="进步内容" v-if="diaries[index].hasProgress === 1">
-        <el-input type="textarea" v-model="diaries[index].progressDetail"/>
-      </el-form-item>
-    </el-form>
-  </el-card>
-  </div>
-  <div v-if="arriveEnd" style="text-align: center;margin-top: 5px">
-    <span>已经没有啦</span>
-  </div>
-</div>
 </template>
 
 <script>
@@ -92,10 +93,12 @@ export default {
     onSubmit () {
       this.loading = true
       this.validate('today', () => {
-        this.$post('progress/saveTodayDiary', this.today).then(res => {
+        this.$post('progress/saveTodayDiary', this.today).then(() => {
           this.init()
           this.loading = false
         })
+      }, () => {
+        this.loading = false
       })
     },
     reset () {
