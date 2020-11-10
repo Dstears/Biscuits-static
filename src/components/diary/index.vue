@@ -36,8 +36,8 @@
         <span>{{diaries[index].createDate}}</span>
       </el-form-item>
       <el-form-item label="是否进步">
-        <el-radio v-model="diaries[index].hasProgress" :label="1">进步了！很棒</el-radio>
-        <el-radio v-model="diaries[index].hasProgress" :label="0">没进步，有点可惜</el-radio>
+        <span v-if="diaries[index].hasProgress === 1" style="color:greenyellow">进步了！很棒</span>
+        <span v-if="diaries[index].hasProgress === 0">没进步，有点可惜</span>
       </el-form-item>
       <el-form-item label="进步内容" v-if="diaries[index].hasProgress === 1">
         <el-input type="textarea" v-model="diaries[index].progressDetail"/>
